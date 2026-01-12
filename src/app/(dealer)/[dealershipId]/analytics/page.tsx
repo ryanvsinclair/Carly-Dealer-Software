@@ -1,4 +1,12 @@
-export default function AnalyticsPage() {
+import { requirePermission } from '@/lib/dealer/requirePermission';
+
+export default async function AnalyticsPage({
+  params,
+}: {
+  params: { dealershipId: string };
+}) {
+  await requirePermission(params.dealershipId, 'analytics:view');
+
   return (
     <div className="p-6 lg:p-12">
       <h1 className="text-[28px] font-bold leading-tight tracking-tight">

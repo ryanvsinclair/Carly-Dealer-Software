@@ -1,4 +1,12 @@
-export default function TeamSettingsPage() {
+import { requirePermission } from '@/lib/dealer/requirePermission';
+
+export default async function TeamSettingsPage({
+  params,
+}: {
+  params: { dealershipId: string };
+}) {
+  await requirePermission(params.dealershipId, 'dealership:edit');
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Team Management</h2>

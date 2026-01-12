@@ -47,35 +47,27 @@ with check (
 -- ============================================================================
 -- 3. ADD RBAC to dealer_memberships UPDATE (team management)
 -- ============================================================================
+-- Combined policy: enforces BOTH manager role AND self-escalation prevention
+-- using AND logic (not OR) to prevent privilege escalation loopholes.
 
-create policy "Dealer managers can manage team members"
+drop policy if exists "Dealer managers can manage team members" on public.dealer_memberships;
+drop policy if exists "Users cannot modify their own membership" on public.dealer_memberships;
+
+create policy "Dealer managers can manage other team members"
 on public.dealer_memberships
 for update
 to authenticated
 using (
   public.can_manage_dealer_team(dealership_id)
+  and user_id != auth.uid()
 )
 with check (
   public.can_manage_dealer_team(dealership_id)
+  and user_id != auth.uid()
 );
 
 -- ============================================================================
--- 4. PREVENT self-escalation (safety lock)
--- ============================================================================
-
-create policy "Users cannot modify their own membership"
-on public.dealer_memberships
-for update
-to authenticated
-using (
-  user_id != auth.uid()
-)
-with check (
-  user_id != auth.uid()
-);
-
--- ============================================================================
--- 5. RESTRICT direct SELECT to self-only
+-- 4. RESTRICT direct SELECT to self-only
 -- ============================================================================
 -- Team access MUST go through the get_dealer_team() RPC.
 -- This prevents:

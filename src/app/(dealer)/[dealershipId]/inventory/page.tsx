@@ -1,13 +1,51 @@
-export default function InventoryPage() {
+import { getDealerContext } from '@/lib/dealer/getDealerContext';
+import { requirePermission } from '@/lib/dealer/requirePermission';
+import { createSupabaseServer } from '@/lib/supabase/server';
+import { InventoryClient } from './InventoryClient';
+
+interface Vehicle {
+  id: string;
+  year: number;
+  make: string;
+  model: string;
+  trim: string | null;
+  price: number;
+  publish_status: string;
+  sale_status: string;
+  updated_at: string;
+}
+
+export default async function InventoryPage({
+  params,
+}: {
+  params: { dealershipId: string };
+}) {
+  const context = await getDealerContext(params.dealershipId);
+  const supabase = createSupabaseServer();
+
+  // Check if user can publish inventory
+  const canPublish = await requirePermission(
+    params.dealershipId,
+    'can_publish_inventory',
+    { throw: false }
+  );
+
+  // Call RPC to get inventory (includes drafts, tenant-isolated)
+  const { data: vehicles, error } = await supabase.rpc('get_dealer_inventory', {
+    p_dealership_id: params.dealershipId,
+  });
+
+  if (error) {
+    console.error('Failed to load inventory:', error);
+  }
+
+  const inventory: Vehicle[] = vehicles || [];
+
   return (
-    <div className="p-6 lg:p-12">
-      <h1 className="text-[28px] font-bold leading-tight tracking-tight">
-        Inventory
-      </h1>
-      <p className="mt-2 text-sm font-light text-muted-foreground">
-        Searchable, filterable table or grid of vehicles with status badges,
-        quick actions, and detail views
-      </p>
-    </div>
+    <InventoryClient 
+      dealershipId={params.dealershipId} 
+      initialInventory={inventory}
+      canPublish={canPublish}
+    />
   );
 }

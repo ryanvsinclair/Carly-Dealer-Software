@@ -1,4 +1,5 @@
 import { getDealerContext } from '@/lib/dealer/getDealerContext';
+import { requirePermission } from '@/lib/dealer/requirePermission';
 import { createSupabaseServer } from '@/lib/supabase/server';
 import {
   Table,
@@ -18,6 +19,8 @@ export default async function DealerTeamPage({
 }: {
   params: { dealershipId: string };
 }) {
+  await requirePermission(params.dealershipId, 'team:view');
+  
   const { dealership, currentUserId, currentUserRole } = await getDealerContext(params.dealershipId);
   const supabase = createSupabaseServer();
   

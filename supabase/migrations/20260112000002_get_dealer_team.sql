@@ -44,5 +44,13 @@ as $$
   join public.profiles p on p.id = m.user_id
   where
     m.dealership_id = p_dealership_id
-    and public.is_active_dealer_member(p_dealership_id);
+    and public.is_active_dealer_member(p_dealership_id)
+    -- Explicit deny-all fallback: prevents data leak if helper is removed
+    and exists (
+      select 1
+      from public.dealer_memberships dm
+      where dm.dealership_id = p_dealership_id
+        and dm.user_id = auth.uid()
+        and dm.is_active = true
+    );
 $$;

@@ -412,10 +412,29 @@ export type Database = {
     }
     Functions: {
       accept_dealer_invite: { Args: { invite_token: string }; Returns: string }
+      get_my_dealerships: {
+        Args: never
+        Returns: {
+          city: string
+          dealership_id: string
+          logo_url: string
+          name: string
+          province_code: string
+          role: Database["public"]["Enums"]["dealer_role"]
+        }[]
+      }
       is_active_dealer_member: { Args: { did: string }; Returns: boolean }
       is_dealer_member: {
         Args: { _dealership_id: string; _user_id: string }
         Returns: boolean
+      }
+      publish_dealer_vehicle: {
+        Args: { p_vehicle_id: string }
+        Returns: {
+          id: string
+          publish_status: string
+          updated_at: string
+        }[]
       }
       resolve_postal_code: {
         Args: { p_postal_code: string }
