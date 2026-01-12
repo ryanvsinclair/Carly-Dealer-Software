@@ -33,5 +33,7 @@ export async function getDealerContext(dealershipId: string) {
     user,
     membership,
     dealership: membership.dealerships,
+    currentUserId: user.id,
+    currentUserRole: membership.role as any,
   };
 }

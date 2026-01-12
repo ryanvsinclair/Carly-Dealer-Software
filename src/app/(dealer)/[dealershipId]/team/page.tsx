@@ -11,29 +11,22 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { InviteStaffModal } from './InviteStaffModal';
 import { InvitesList } from './InvitesList';
+import { can, type DealerRole } from '@/lib/rbac';
 
 export default async function DealerTeamPage({
   params,
 }: {
   params: { dealershipId: string };
 }) {
-  const { dealership, currentUserId } = await getDealerContext(params.dealershipId);
+  const { dealership, currentUserId, currentUserRole } = await getDealerContext(params.dealershipId);
   const supabase = createSupabaseServer();
+  
+  const canInvite = can(currentUserRole as DealerRole, 'invite:create');
+  const canManageTeam = can(currentUserRole as DealerRole, 'team:manage');
 
-  const { data: team } = await supabase
-    .from('dealer_memberships')
-    .select(`
-      id,
-      role,
-      is_active,
-      profiles (
-        id,
-        name,
-        email,
-        phone_number
-      )
-    `)
-    .eq('dealership_id', params.dealershipId);
+  const { data: team } = await supabase.rpc('get_dealer_team', {
+    p_dealership_id: params.dealershipId,
+  });
 
   const { data: invites } = await supabase
     .from('dealer_invitations')
@@ -47,10 +40,12 @@ export default async function DealerTeamPage({
         <h1 className="text-[28px] font-bold text-[#171717] dark:text-[#FAFAFA]">
           Team — {dealership.name}
         </h1>
-        <InviteStaffModal 
-          dealershipId={params.dealershipId}
-          currentUserId={currentUserId}
-        />
+        {canInvite && (
+          <InviteStaffModal 
+            dealershipId={params.dealershipId}
+            currentUserId={currentUserId}
+          />
+        )}
       </div>
 
       <div className="border border-[#E5E5E5] dark:border-[#262626] bg-white dark:bg-[#171717] rounded-lg overflow-hidden">
@@ -69,19 +64,24 @@ export default async function DealerTeamPage({
               <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
                 Status
               </TableHead>
+              {canManageTeam && (
+                <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
+                  Actions
+                </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {team?.map((member: any) => (
+            {team?.map((member) => (
               <TableRow
-                key={member.id}
+                key={member.membership_id}
                 className="border-b border-[#E5E5E5] dark:border-[#262626]"
               >
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
-                  {member.profiles?.name ?? 'N/A'}
+                  {member.name ?? 'N/A'}
                 </TableCell>
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
-                  {member.profiles?.email ?? 'N/A'}
+                  {member.email ?? 'N/A'}
                 </TableCell>
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
                   {member.role}
@@ -98,16 +98,32 @@ export default async function DealerTeamPage({
                     {member.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
+                {canManageTeam && (
+                  <TableCell>
+                    {member.user_id !== currentUserId && (
+                      <form action={`/api/team/${member.membership_id}/toggle-status`} method="POST">
+                        <button
+                          type="submit"
+                          className="text-[14px] font-light text-[#3B82F6] hover:underline"
+                        >
+                          {member.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                      </form>
+                    )}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
 
-      <InvitesList 
-        invites={invites || []}
-        dealershipId={params.dealershipId}
-      />
+      {canInvite && (
+        <InvitesList 
+          invites={invites || []}
+          dealershipId={params.dealershipId}
+        />
+      )}
     </div>
   );
 }
