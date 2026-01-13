@@ -131,7 +131,13 @@ export function InviteStaffModal({
               >
                 Role
               </Label>
-              <Select value={role} onValueChange={setRole} required>
+              <Select
+                value={role}
+                onValueChange={(value) =>
+                  setRole(value as Database["public"]["Enums"]["dealer_role"])
+                }
+                required
+              >
                 <SelectTrigger className="border-[#E5E5E5] dark:border-[#262626] bg-white dark:bg-[#0A0A0A] text-[#171717] dark:text-[#FAFAFA]">
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
