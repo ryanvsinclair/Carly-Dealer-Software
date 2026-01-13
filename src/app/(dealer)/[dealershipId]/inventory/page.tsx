@@ -1,7 +1,7 @@
-import { getDealerContext } from '@/lib/dealer/getDealerContext';
-import { requirePermission } from '@/lib/dealer/requirePermission';
-import { createSupabaseServer } from '@/lib/supabase/server';
-import { InventoryClient } from './InventoryClient';
+import { getDealerContext } from "@/lib/dealer/getDealerContext";
+import { requirePermission } from "@/lib/dealer/requirePermission";
+import { createSupabaseServer } from "@/lib/supabase/server";
+import { InventoryClient } from "./InventoryClient";
 
 interface Vehicle {
   id: string;
@@ -24,26 +24,31 @@ export default async function InventoryPage({
   const supabase = createSupabaseServer();
 
   // Check if user can publish inventory
-  const canPublish = await requirePermission(
-    params.dealershipId,
-    'can_publish_inventory',
-    { throw: false }
-  );
+  let canPublish = false;
+
+  try {
+    canPublish = await requirePermission(
+      params.dealershipId,
+      'can_publish_inventory'
+    );
+  } catch {
+    canPublish = false;
+  }
 
   // Call RPC to get inventory (includes drafts, tenant-isolated)
-  const { data: vehicles, error } = await supabase.rpc('get_dealer_inventory', {
+  const { data: vehicles, error } = await supabase.rpc("get_dealer_inventory", {
     p_dealership_id: params.dealershipId,
   });
 
   if (error) {
-    console.error('Failed to load inventory:', error);
+    console.error("Failed to load inventory:", error);
   }
 
   const inventory: Vehicle[] = vehicles || [];
 
   return (
-    <InventoryClient 
-      dealershipId={params.dealershipId} 
+    <InventoryClient
+      dealershipId={params.dealershipId}
       initialInventory={inventory}
       canPublish={canPublish}
     />
