@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function AcceptInvitePage({
@@ -6,7 +6,7 @@ export default async function AcceptInvitePage({
 }: {
   params: { token: string };
 }) {
-  const supabase = await createClient();
+  const supabase = createSupabaseServer();
 
   const { data: invite } = await supabase
     .from("dealer_invitations")
@@ -45,7 +45,7 @@ export default async function AcceptInvitePage({
       action={async () => {
         "use server";
 
-        const supabase = await createClient();
+        const supabase = createSupabaseServer();
 
         const {
           data: { user },
