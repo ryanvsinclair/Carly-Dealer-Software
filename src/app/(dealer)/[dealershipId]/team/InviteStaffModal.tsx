@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { Database } from '@/types/supabase';
 import { createSupabaseBrowser } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,7 +36,7 @@ export function InviteStaffModal({
   const [error, setError] = useState<string | null>(null);
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<string>('');
+  const [role, setRole] = useState<Database['public']['Enums']['dealer_role'] | ''>('');
 
   const generateToken = () => {
     const array = new Uint8Array(32);
@@ -57,13 +58,15 @@ export function InviteStaffModal({
 
       const { error: insertError } = await supabase
         .from('dealer_invitations')
-        .insert({
-          dealership_id: dealershipId,
-          email: email.trim(),
-          role,
-          token,
-          invited_by: currentUserId,
-        });
+        .insert([
+          {
+            dealership_id: dealershipId,
+            email: email.trim(),
+            role,
+            token,
+            invited_by: currentUserId,
+          },
+        ]);
 
       if (insertError) throw insertError;
 
