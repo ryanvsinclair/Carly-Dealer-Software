@@ -9,12 +9,16 @@ export default function DealerRequestAccessPage() {
 
           const supabase = createSupabaseServer();
 
-          await supabase.from("dealer_access_requests").insert({
-            full_name: formData.get("full_name"),
-            email: formData.get("email"),
-            dealer_role: formData.get("dealer_role"),
-            website: formData.get("website"),
-          });
+          await supabase
+            .from("dealer_access_requests")
+            .insert([
+              {
+                full_name: formData.get("full_name") as string,
+                email: formData.get("email") as string,
+                dealer_role: formData.get("dealer_role") as string,
+                website: formData.get("website") as string,
+              },
+            ]);
         }}
         className="w-full max-w-md p-8 border rounded-lg bg-card space-y-6"
       >
