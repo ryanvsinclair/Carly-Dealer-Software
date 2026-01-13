@@ -14,6 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      dealer_access_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          dealer_role: string
+          dealership_id: string | null
+          email: string
+          full_name: string
+          id: string
+          invitation_id: string | null
+          notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          website: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          dealer_role: string
+          dealership_id?: string | null
+          email: string
+          full_name: string
+          id?: string
+          invitation_id?: string | null
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          website: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          dealer_role?: string
+          dealership_id?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          invitation_id?: string | null
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          website?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dealer_access_requests_dealership_id_fkey"
+            columns: ["dealership_id"]
+            isOneToOne: false
+            referencedRelation: "dealerships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dealer_access_requests_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "dealer_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dealer_access_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dealer_group_memberships: {
         Row: {
           created_at: string
@@ -176,6 +246,50 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "dealerships"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      dealer_permissions: {
+        Row: {
+          created_at: string
+          description: string
+          key: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          key: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          key?: string
+        }
+        Relationships: []
+      }
+      dealer_role_permissions: {
+        Row: {
+          created_at: string
+          permission_key: string
+          role: Database["public"]["Enums"]["dealer_role"]
+        }
+        Insert: {
+          created_at?: string
+          permission_key: string
+          role: Database["public"]["Enums"]["dealer_role"]
+        }
+        Update: {
+          created_at?: string
+          permission_key?: string
+          role?: Database["public"]["Enums"]["dealer_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dealer_role_permissions_permission_key_fkey"
+            columns: ["permission_key"]
+            isOneToOne: false
+            referencedRelation: "dealer_permissions"
+            referencedColumns: ["key"]
           },
         ]
       }
@@ -412,64 +526,86 @@ export type Database = {
     }
     Functions: {
       accept_dealer_invite: { Args: { invite_token: string }; Returns: string }
+      approve_dealer_application: {
+        Args: { p_application_id: string }
+        Returns: {
+          dealership_id: string
+          invitation_id: string
+          invite_email: string
+          invite_token: string
+        }[]
+      }
+      can_publish_inventory: {
+        Args: { p_dealership_id: string }
+        Returns: boolean
+      }
       create_dealer_vehicle: {
         Args: {
           p_dealership_id: string
+          p_description: string
+          p_make: string
+          p_mileage: number
+          p_model: string
+          p_price: number
+          p_trim: string
           p_vin: string
           p_year: number
-          p_make: string
-          p_model: string
-          p_trim: string
-          p_mileage: number
-          p_price: number
-          p_description: string
         }
         Returns: {
+          created_at: string
+          created_by: string
+          description: string | null
           id: string
-          owner_type: string
+          make: string | null
+          mileage: number | null
+          model: string | null
           owner_dealership_id: string | null
           owner_profile_id: string | null
-          vin: string | null
-          year: number
-          make: string
-          model: string
+          owner_type: Database["public"]["Enums"]["vehicle_owner_type"]
+          price: number | null
+          publish_status: Database["public"]["Enums"]["vehicle_publish_status"]
+          sale_status: Database["public"]["Enums"]["vehicle_sale_status"]
           trim: string | null
-          mileage: number
-          price: number
-          description: string | null
-          publish_status: string
-          sale_status: string
-          created_by: string
-          created_at: string
           updated_at: string
-        }[]
+          vin: string | null
+          year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "vehicles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_dealer_inventory: {
         Args: { p_dealership_id: string }
         Returns: {
+          created_at: string
           id: string
-          year: number
           make: string
+          mileage: number
           model: string
-          trim: string | null
           price: number
           publish_status: string
           sale_status: string
+          trim: string
           updated_at: string
-          created_at: string
+          year: number
         }[]
       }
       get_dealer_team: {
         Args: { p_dealership_id: string }
         Returns: {
-          membership_id: string
-          user_id: string
-          role: Database["public"]["Enums"]["dealer_role"]
+          email: string
+          invite_created_at: string
+          invite_email: string
+          invite_id: string
+          invite_role: string
+          invite_status: string
           is_active: boolean
-          name: string | null
-          email: string | null
-          phone_number: string | null
-          created_at: string
+          member_created_at: string
+          role: string
+          user_id: string
         }[]
       }
       get_my_dealer_permissions: {
@@ -489,7 +625,20 @@ export type Database = {
           role: Database["public"]["Enums"]["dealer_role"]
         }[]
       }
+      has_dealer_permission: {
+        Args: {
+          p_dealership_id: string
+          p_permission: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
+      has_my_dealer_permission: {
+        Args: { p_dealership_id: string; p_permission: string }
+        Returns: boolean
+      }
       is_active_dealer_member: { Args: { did: string }; Returns: boolean }
+      is_admin: { Args: never; Returns: boolean }
       is_dealer_member: {
         Args: { _dealership_id: string; _user_id: string }
         Returns: boolean
@@ -498,7 +647,7 @@ export type Database = {
         Args: { p_vehicle_id: string }
         Returns: {
           id: string
-          publish_status: string
+          publish_status: Database["public"]["Enums"]["vehicle_publish_status"]
           updated_at: string
         }[]
       }
