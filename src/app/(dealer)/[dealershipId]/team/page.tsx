@@ -94,7 +94,7 @@ export default async function DealerTeamPage({
           <TableBody>
             {team?.map((member) => (
               <TableRow
-                key={member.membership_id}
+                key={member.user_id}
                 className="border-b border-[#E5E5E5] dark:border-[#262626]"
               >
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
