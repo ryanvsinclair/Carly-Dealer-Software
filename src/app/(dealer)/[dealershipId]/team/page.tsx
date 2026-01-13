@@ -39,7 +39,14 @@ export default async function DealerTeamPage({
   const canInvite = context.permissions.includes('invite.create');
   const canManageTeam = context.permissions.includes('team.manage');
 
-  const { data: team } = await supabase.rpc<DealerTeamRow[]>(
+  type GetDealerTeamArgs = {
+    p_dealership_id: string;
+  };
+
+  const { data: team } = await supabase.rpc<
+    GetDealerTeamArgs,
+    DealerTeamRow[]
+  >(
     'get_dealer_team',
     { p_dealership_id: params.dealershipId }
   );

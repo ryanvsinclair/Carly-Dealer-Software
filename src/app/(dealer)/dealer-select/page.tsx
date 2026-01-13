@@ -4,6 +4,15 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Building2 } from 'lucide-react';
 
+type MyDealershipRow = {
+  dealership_id: string;
+  name: string;
+  logo_url: string | null;
+  city: string | null;
+  province_code: string | null;
+  role: 'general_manager' | 'sales_manager' | 'finance_manager' | 'salesperson';
+};
+
 export default async function DealerSelectPage() {
   const supabase = createSupabaseServer();
 
@@ -15,7 +24,10 @@ export default async function DealerSelectPage() {
     redirect('/dealer-login');
   }
 
-  const { data: dealerships, error } = await supabase.rpc('get_my_dealerships');
+  const { data: dealerships, error } = await supabase.rpc<
+    never,
+    MyDealershipRow[]
+  >('get_my_dealerships');
 
   if (error || !dealerships || dealerships.length === 0) {
     redirect('/dealer-request-access');
@@ -38,7 +50,7 @@ export default async function DealerSelectPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {dealerships.map((dealership: any) => {
+          {dealerships.map((dealership) => {
             return (
               <Link
                 key={dealership.dealership_id}

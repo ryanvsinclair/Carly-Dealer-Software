@@ -3,6 +3,24 @@ import { hasPermission } from "@/lib/dealer/requirePermission";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { InventoryClient } from "./InventoryClient";
 
+type GetDealerInventoryArgs = {
+  p_dealership_id: string;
+};
+
+type DealerInventoryRow = {
+  id: string;
+  year: number;
+  make: string;
+  model: string;
+  trim: string | null;
+  mileage: number;
+  price: number;
+  publish_status: string;
+  sale_status: string;
+  created_at: string;
+  updated_at: string;
+};
+
 interface Vehicle {
   id: string;
   year: number;
@@ -29,7 +47,10 @@ export default async function InventoryPage({
   );
 
   // Call RPC to get inventory (includes drafts, tenant-isolated)
-  const { data: vehicles, error } = await supabase.rpc("get_dealer_inventory", {
+  const { data: vehicles, error } = await supabase.rpc<
+    GetDealerInventoryArgs,
+    DealerInventoryRow[]
+  >("get_dealer_inventory", {
     p_dealership_id: params.dealershipId,
   });
 

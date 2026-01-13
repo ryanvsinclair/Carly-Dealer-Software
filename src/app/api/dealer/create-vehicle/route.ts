@@ -1,6 +1,24 @@
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+type CreateVehicleArgs = {
+  p_vin: string;
+  p_year: number;
+  p_make: string;
+  p_model: string;
+  p_trim: string | null;
+  p_mileage: number;
+  p_price: number;
+  p_description: string | null;
+  p_dealership_id: string;
+};
+
+type VehicleRow = {
+  id: string;
+  publish_status: string;
+  sale_status: string;
+};
+
 export async function POST(request: Request) {
   try {
     const supabase = createSupabaseServer();
@@ -19,7 +37,10 @@ export async function POST(request: Request) {
     } = body;
 
     // Call the RPC
-    const { data, error } = await supabase.rpc("create_dealer_vehicle", {
+    const { data, error } = await supabase.rpc<
+      CreateVehicleArgs,
+      VehicleRow
+    >("create_dealer_vehicle", {
       p_dealership_id: dealershipId,
       p_vin: vin,
       p_year: year,
