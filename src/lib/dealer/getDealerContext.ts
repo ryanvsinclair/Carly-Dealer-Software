@@ -57,14 +57,6 @@ export async function getDealerContext(dealershipId: string): Promise<DealerCont
   }
 
   // 3. Get live permissions from DB
-  type GetMyDealerPermissionsArgs = {
-    p_dealership_id: string;
-  };
-
-  type PermissionRow = {
-    permission_key: string;
-  };
-
   const { data: perms, error: permsError } = await supabase.rpc(
     'get_my_dealer_permissions',
     { p_dealership_id: dealershipId }
@@ -74,7 +66,9 @@ export async function getDealerContext(dealershipId: string): Promise<DealerCont
     throw new Error('Failed to load permissions');
   }
 
-  const permissions = (perms ?? []).map((p) => p.permission_key);
+  const permissions = (perms ?? []).map(
+    (p) => p.permission_key as DealerPermission
+  );
 
   return {
     user,

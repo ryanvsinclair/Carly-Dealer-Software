@@ -5,6 +5,8 @@
  * Used by: Team management, Invitations, Settings, Billing, Middleware, Guards
  */
 
+import type { Database } from "@/types/supabase";
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -16,14 +18,7 @@ export type DealerRole =
   | "salesperson";
 
 export type DealerPermission =
-  | "invite.create"
-  | "invite.revoke"
-  | "team.view"
-  | "team.manage"
-  | "dealership.edit"
-  | "inventory.write"
-  | "inventory.publish"
-  | "analytics.view";
+  Database["public"]["Tables"]["dealer_permissions"]["Row"]["key"];
 
 /**
  * Safe role list for UI selects (stable order, no function call)
