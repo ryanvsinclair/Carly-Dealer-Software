@@ -19,13 +19,13 @@ export default async function DealerTeamPage({
 }: {
   params: { dealershipId: string };
 }) {
-  await requirePermission(params.dealershipId, 'team:view');
+  await requirePermission(params.dealershipId, 'team.view');
   
   const { dealership, currentUserId, currentUserRole } = await getDealerContext(params.dealershipId);
   const supabase = createSupabaseServer();
   
-  const canInvite = can(currentUserRole as DealerRole, 'invite:create');
-  const canManageTeam = can(currentUserRole as DealerRole, 'team:manage');
+  const canInvite = can(currentUserRole as DealerRole, 'invite.create');
+  const canManageTeam = can(currentUserRole as DealerRole, 'team.manage');
 
   const { data: team } = await supabase.rpc('get_dealer_team', {
     p_dealership_id: params.dealershipId,

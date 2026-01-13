@@ -85,19 +85,19 @@ export function Header({ dealershipId, dealershipName, logoUrl, roleLabel, permi
       label: "Analytics",
       icon: BarChart3,
       href: `/dealer/${dealershipId}/analytics`,
-      permission: 'analytics:view',
+      permission: 'analytics.view',
     },
     {
       label: "Team",
       icon: UsersRound,
       href: `/dealer/${dealershipId}/team`,
-      permission: 'team:view',
+      permission: 'team.view',
     },
     {
       label: "Settings",
       icon: Settings,
       href: `/dealer/${dealershipId}/settings`,
-      permission: 'dealership:edit',
+      permission: 'dealership.edit',
     },
   ]
 

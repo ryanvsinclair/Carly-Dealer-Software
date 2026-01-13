@@ -5,7 +5,7 @@ export default async function SettingsPage({
 }: {
   params: { dealershipId: string };
 }) {
-  await requirePermission(params.dealershipId, 'dealership:edit');
+  await requirePermission(params.dealershipId, 'dealership.edit');
 
   return (
     <div className="p-6 lg:p-12">

@@ -5,7 +5,7 @@ export default async function AnalyticsPage({
 }: {
   params: { dealershipId: string };
 }) {
-  await requirePermission(params.dealershipId, 'analytics:view');
+  await requirePermission(params.dealershipId, 'analytics.view');
 
   return (
     <div className="p-6 lg:p-12">

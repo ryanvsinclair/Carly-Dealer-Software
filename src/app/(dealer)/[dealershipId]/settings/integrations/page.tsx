@@ -5,7 +5,7 @@ export default async function IntegrationsSettingsPage({
 }: {
   params: { dealershipId: string };
 }) {
-  await requirePermission(params.dealershipId, 'dealership:edit');
+  await requirePermission(params.dealershipId, 'dealership.edit');
 
   return (
     <div>
