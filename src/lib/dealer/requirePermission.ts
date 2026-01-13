@@ -11,8 +11,20 @@ export async function requirePermission(
   permission: DealerPermission
 ): Promise<void> {
   const context = await getDealerContext(dealershipId);
-  
+
   if (!context.permissions.includes(permission)) {
     notFound();
   }
+}
+
+/**
+ * Server-side permission check (non-throwing)
+ * Useful for conditional UI (buttons, actions, etc.)
+ */
+export async function hasPermission(
+  dealershipId: string,
+  permission: DealerPermission
+): Promise<boolean> {
+  const context = await getDealerContext(dealershipId);
+  return context.permissions.includes(permission);
 }

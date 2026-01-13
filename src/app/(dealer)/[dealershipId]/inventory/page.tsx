@@ -1,5 +1,5 @@
 import { getDealerContext } from "@/lib/dealer/getDealerContext";
-import { requirePermission } from "@/lib/dealer/requirePermission";
+import { hasPermission } from "@/lib/dealer/requirePermission";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { InventoryClient } from "./InventoryClient";
 
@@ -20,20 +20,13 @@ export default async function InventoryPage({
 }: {
   params: { dealershipId: string };
 }) {
-  const context = await getDealerContext(params.dealershipId);
+  await getDealerContext(params.dealershipId);
   const supabase = createSupabaseServer();
 
-  // Check if user can publish inventory
-  let canPublish = false;
-
-  try {
-    canPublish = await requirePermission(
-      params.dealershipId,
-      'can_publish_inventory'
-    );
-  } catch {
-    canPublish = false;
-  }
+  const canPublish = await hasPermission(
+    params.dealershipId,
+    "can_publish_inventory"
+  );
 
   // Call RPC to get inventory (includes drafts, tenant-isolated)
   const { data: vehicles, error } = await supabase.rpc("get_dealer_inventory", {
