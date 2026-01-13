@@ -14,14 +14,16 @@ import { InviteStaffModal } from './InviteStaffModal';
 import { InvitesList } from './InvitesList';
 
 type DealerTeamRow = {
-  membership_id: string;
   user_id: string;
-  role: 'general_manager' | 'sales_manager' | 'finance_manager' | 'salesperson';
+  email: string;
+  role: string;
   is_active: boolean;
-  name: string | null;
-  email: string | null;
-  phone_number: string | null;
-  created_at: string; // timestamptz
+  member_created_at: string;
+  invite_id: string;
+  invite_email: string;
+  invite_role: string;
+  invite_status: string;
+  invite_created_at: string;
 };
 
 export default async function DealerTeamPage({
@@ -73,9 +75,6 @@ export default async function DealerTeamPage({
           <TableHeader>
             <TableRow className="border-b border-[#E5E5E5] dark:border-[#262626]">
               <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
-                Name
-              </TableHead>
-              <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
                 Email
               </TableHead>
               <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
@@ -84,11 +83,6 @@ export default async function DealerTeamPage({
               <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
                 Status
               </TableHead>
-              {canManageTeam && (
-                <TableHead className="text-[12px] font-bold text-[#171717]/60 dark:text-[#FAFAFA]/60 uppercase tracking-wider">
-                  Actions
-                </TableHead>
-              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,9 +91,6 @@ export default async function DealerTeamPage({
                 key={member.user_id}
                 className="border-b border-[#E5E5E5] dark:border-[#262626]"
               >
-                <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
-                  {member.email ?? 'N/A'}
-                </TableCell>
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
                   {member.email ?? 'N/A'}
                 </TableCell>
@@ -118,20 +109,6 @@ export default async function DealerTeamPage({
                     {member.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
-                {canManageTeam && (
-                  <TableCell>
-                    {member.user_id !== currentUserId && (
-                      <form action={`/api/team/${member.membership_id}/toggle-status`} method="POST">
-                        <button
-                          type="submit"
-                          className="text-[14px] font-light text-[#3B82F6] hover:underline"
-                        >
-                          {member.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                      </form>
-                    )}
-                  </TableCell>
-                )}
               </TableRow>
             ))}
           </TableBody>
