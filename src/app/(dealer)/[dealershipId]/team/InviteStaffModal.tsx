@@ -73,7 +73,7 @@ export function InviteStaffModal({
       const link = `${window.location.origin}/dealer-invite?token=${token}`;
       setInviteLink(link);
       setEmail('');
-      setRole('');
+      setRole('salesperson');
     } catch (err: any) {
       setError(err.message || 'Failed to create invitation');
     } finally {
@@ -86,7 +86,7 @@ export function InviteStaffModal({
     setInviteLink(null);
     setError(null);
     setEmail('');
-    setRole('');
+    setRole('salesperson');
   };
 
   return (

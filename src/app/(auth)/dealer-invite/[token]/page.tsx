@@ -54,12 +54,14 @@ export default async function AcceptInvitePage({
         if (!user) throw new Error("Not authenticated");
 
         // Create dealership membership
-        await supabase.from("dealer_memberships").insert({
-          user_id: user.id,
-          dealership_id: invite.dealership_id,
-          role: invite.role,
-          is_active: true,
-        });
+        await supabase.from("dealer_memberships").insert([
+          {
+            user_id: user.id,
+            dealership_id: invite.dealership_id,
+            role: invite.role,
+            is_active: true,
+          },
+        ]);
 
         // Mark invite accepted
         await supabase
