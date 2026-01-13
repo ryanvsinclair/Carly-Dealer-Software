@@ -25,7 +25,7 @@ export default async function InventoryPage({
 
   const canPublish = await hasPermission(
     params.dealershipId,
-    "can_publish_inventory"
+    "inventory.publish"
   );
 
   // Call RPC to get inventory (includes drafts, tenant-isolated)

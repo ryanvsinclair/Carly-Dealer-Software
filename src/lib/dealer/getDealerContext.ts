@@ -1,5 +1,5 @@
 import { createSupabaseServer } from '@/lib/supabase/server';
-import { getPermissions, type DealerRole, type DealerPermission } from '@/lib/rbac';
+import type { DealerRole, DealerPermission } from '@/lib/rbac';
 import type { User } from '@supabase/supabase-js';
 
 // ============================================================================
@@ -33,34 +33,40 @@ export async function getDealerContext(dealershipId: string): Promise<DealerCont
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { data: membership } = await supabase
-    .from('dealer_memberships')
-    .select(`
-      id,
-      role,
-      is_active,
-      dealerships (
-        id,
-        name,
-        city,
-        province_code,
-        logo_url,
-        dealer_group_id,
-        account_status
-      )
-    `)
-    .eq('user_id', user.id)
-    .eq('dealership_id', dealershipId)
-    .eq('is_active', true)
-    .maybeSingle();
+  // 1. Get dealership
+  const { data: dealership, error: dealershipError } = await supabase
+    .from('dealerships')
+    .select('*')
+    .eq('id', dealershipId)
+    .single();
 
-  if (!membership || !membership.dealerships) {
-    throw new Error('Unauthorized dealership access');
+  if (dealershipError || !dealership) {
+    throw new Error('Dealership not found');
   }
 
-  const dealership = membership.dealerships;
-  const role = membership.role as DealerRole;
-  const permissions = getPermissions(role);
+  // 2. Get membership
+  const { data: membership, error: membershipError } = await supabase
+    .from('dealer_memberships')
+    .select('role, is_active')
+    .eq('dealership_id', dealershipId)
+    .eq('user_id', user.id)
+    .single();
+
+  if (membershipError || !membership || !membership.is_active) {
+    throw new Error('Not an active dealer member');
+  }
+
+  // 3. Get live permissions from DB
+  const { data: perms, error: permsError } = await supabase.rpc(
+    'get_my_dealer_permissions',
+    { p_dealership_id: dealershipId }
+  );
+
+  if (permsError) {
+    throw new Error('Failed to load permissions');
+  }
+
+  const permissions = (perms ?? []).map((p: any) => p.permission_key);
 
   return {
     user,
@@ -73,7 +79,7 @@ export async function getDealerContext(dealershipId: string): Promise<DealerCont
       account_status: dealership.account_status,
     },
     membership: {
-      role,
+      role: membership.role as DealerRole,
       is_active: membership.is_active,
     },
     permissions,

@@ -16,14 +16,14 @@ export type DealerRole =
   | "salesperson";
 
 export type DealerPermission =
-  | "invite:create"
-  | "invite:revoke"
-  | "team:view"
-  | "team:manage"
-  | "dealership:edit"
-  | "inventory:write"
-  | "can_publish_inventory"
-  | "analytics:view";
+  | "invite.create"
+  | "invite.revoke"
+  | "team.view"
+  | "team.manage"
+  | "dealership.edit"
+  | "inventory.write"
+  | "inventory.publish"
+  | "analytics.view";
 
 /**
  * Safe role list for UI selects (stable order, no function call)
@@ -41,29 +41,29 @@ export const DEALER_ROLE_VALUES: DealerRole[] = [
 
 export const permissionsByRole: Record<DealerRole, DealerPermission[]> = {
   general_manager: [
-    "invite:create",
-    "invite:revoke",
-    "team:view",
-    "team:manage",
-    "dealership:edit",
-    "inventory:write",
-    "can_publish_inventory",
-    "analytics:view",
+    "invite.create",
+    "invite.revoke",
+    "team.view",
+    "team.manage",
+    "dealership.edit",
+    "inventory.write",
+    "inventory.publish",
+    "analytics.view",
   ],
 
   sales_manager: [
-    "invite:create",
-    "invite:revoke",
-    "team:view",
-    "team:manage",
-    "inventory:write",
-    "can_publish_inventory",
-    "analytics:view",
+    "invite.create",
+    "invite.revoke",
+    "team.view",
+    "team.manage",
+    "inventory.write",
+    "inventory.publish",
+    "analytics.view",
   ],
 
-  finance_manager: ["team:view", "inventory:write", "analytics:view"],
+  finance_manager: ["team.view", "inventory.write", "analytics.view"],
 
-  salesperson: ["team:view", "inventory:write"],
+  salesperson: ["team.view", "inventory.write"],
 };
 
 // ============================================================================
