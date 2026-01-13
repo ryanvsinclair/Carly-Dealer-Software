@@ -12,7 +12,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { InviteStaffModal } from './InviteStaffModal';
 import { InvitesList } from './InvitesList';
-import { can, type DealerRole } from '@/lib/rbac';
 
 export default async function DealerTeamPage({
   params,
@@ -20,12 +19,14 @@ export default async function DealerTeamPage({
   params: { dealershipId: string };
 }) {
   await requirePermission(params.dealershipId, 'team.view');
-  
-  const { dealership, currentUserId, currentUserRole } = await getDealerContext(params.dealershipId);
+
+  const context = await getDealerContext(params.dealershipId);
   const supabase = createSupabaseServer();
-  
-  const canInvite = can(currentUserRole as DealerRole, 'invite.create');
-  const canManageTeam = can(currentUserRole as DealerRole, 'team.manage');
+
+  const currentUserId = context.user.id;
+
+  const canInvite = context.permissions.includes('invite.create');
+  const canManageTeam = context.permissions.includes('team.manage');
 
   const { data: team } = await supabase.rpc('get_dealer_team', {
     p_dealership_id: params.dealershipId,
@@ -41,7 +42,7 @@ export default async function DealerTeamPage({
     <div className="max-w-7xl mx-auto space-y-12">
       <div className="flex items-center justify-between">
         <h1 className="text-[28px] font-bold text-[#171717] dark:text-[#FAFAFA]">
-          Team — {dealership.name}
+          Team — {context.dealership.name}
         </h1>
         {canInvite && (
           <InviteStaffModal 
