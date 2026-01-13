@@ -37,10 +37,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Call the RPC
-    const { data, error } = await supabase.rpc<
-      CreateVehicleArgs,
-      VehicleRow
-    >("create_dealer_vehicle", {
+    const { data, error } = await supabase.rpc("create_dealer_vehicle", {
       p_dealership_id: dealershipId,
       p_vin: vin,
       p_year: year,

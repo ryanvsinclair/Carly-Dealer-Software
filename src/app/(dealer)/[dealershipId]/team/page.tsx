@@ -43,10 +43,7 @@ export default async function DealerTeamPage({
     p_dealership_id: string;
   };
 
-  const { data: team } = await supabase.rpc<
-    GetDealerTeamArgs,
-    DealerTeamRow[]
-  >(
+  const { data: team } = await supabase.rpc(
     'get_dealer_team',
     { p_dealership_id: params.dealershipId }
   );

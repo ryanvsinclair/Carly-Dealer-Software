@@ -412,6 +412,72 @@ export type Database = {
     }
     Functions: {
       accept_dealer_invite: { Args: { invite_token: string }; Returns: string }
+      create_dealer_vehicle: {
+        Args: {
+          p_dealership_id: string
+          p_vin: string
+          p_year: number
+          p_make: string
+          p_model: string
+          p_trim: string
+          p_mileage: number
+          p_price: number
+          p_description: string
+        }
+        Returns: {
+          id: string
+          owner_type: string
+          owner_dealership_id: string | null
+          owner_profile_id: string | null
+          vin: string | null
+          year: number
+          make: string
+          model: string
+          trim: string | null
+          mileage: number
+          price: number
+          description: string | null
+          publish_status: string
+          sale_status: string
+          created_by: string
+          created_at: string
+          updated_at: string
+        }[]
+      }
+      get_dealer_inventory: {
+        Args: { p_dealership_id: string }
+        Returns: {
+          id: string
+          year: number
+          make: string
+          model: string
+          trim: string | null
+          price: number
+          publish_status: string
+          sale_status: string
+          updated_at: string
+          created_at: string
+        }[]
+      }
+      get_dealer_team: {
+        Args: { p_dealership_id: string }
+        Returns: {
+          membership_id: string
+          user_id: string
+          role: Database["public"]["Enums"]["dealer_role"]
+          is_active: boolean
+          name: string | null
+          email: string | null
+          phone_number: string | null
+          created_at: string
+        }[]
+      }
+      get_my_dealer_permissions: {
+        Args: { p_dealership_id: string }
+        Returns: {
+          permission_key: string
+        }[]
+      }
       get_my_dealerships: {
         Args: never
         Returns: {

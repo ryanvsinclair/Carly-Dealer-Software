@@ -47,10 +47,7 @@ export default async function InventoryPage({
   );
 
   // Call RPC to get inventory (includes drafts, tenant-isolated)
-  const { data: vehicles, error } = await supabase.rpc<
-    GetDealerInventoryArgs,
-    DealerInventoryRow[]
-  >("get_dealer_inventory", {
+  const { data: vehicles, error } = await supabase.rpc("get_dealer_inventory", {
     p_dealership_id: params.dealershipId,
   });
 

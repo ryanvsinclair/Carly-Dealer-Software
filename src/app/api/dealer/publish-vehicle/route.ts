@@ -26,10 +26,7 @@ export async function POST(request: Request) {
     }
 
     // Call the RPC
-    const { data, error } = await supabase.rpc<
-      PublishVehicleArgs,
-      PublishVehicleResult
-    >('publish_dealer_vehicle', {
+    const { data, error } = await supabase.rpc('publish_dealer_vehicle', {
       p_vehicle_id: vehicleId,
     });
 

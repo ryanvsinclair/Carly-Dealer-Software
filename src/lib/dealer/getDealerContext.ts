@@ -65,10 +65,7 @@ export async function getDealerContext(dealershipId: string): Promise<DealerCont
     permission_key: string;
   };
 
-  const { data: perms, error: permsError } = await supabase.rpc<
-    GetMyDealerPermissionsArgs,
-    PermissionRow[]
-  >(
+  const { data: perms, error: permsError } = await supabase.rpc(
     'get_my_dealer_permissions',
     { p_dealership_id: dealershipId }
   );
