@@ -98,7 +98,7 @@ export default async function DealerTeamPage({
                 className="border-b border-[#E5E5E5] dark:border-[#262626]"
               >
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
-                  {member.name ?? 'N/A'}
+                  {member.email ?? 'N/A'}
                 </TableCell>
                 <TableCell className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA]">
                   {member.email ?? 'N/A'}
