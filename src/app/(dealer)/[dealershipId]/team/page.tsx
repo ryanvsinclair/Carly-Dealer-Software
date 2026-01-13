@@ -13,6 +13,17 @@ import { Badge } from '@/components/ui/badge';
 import { InviteStaffModal } from './InviteStaffModal';
 import { InvitesList } from './InvitesList';
 
+type DealerTeamRow = {
+  membership_id: string;
+  user_id: string;
+  role: 'general_manager' | 'sales_manager' | 'finance_manager' | 'salesperson';
+  is_active: boolean;
+  name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  created_at: string; // timestamptz
+};
+
 export default async function DealerTeamPage({
   params,
 }: {
@@ -28,9 +39,10 @@ export default async function DealerTeamPage({
   const canInvite = context.permissions.includes('invite.create');
   const canManageTeam = context.permissions.includes('team.manage');
 
-  const { data: team } = await supabase.rpc('get_dealer_team', {
-    p_dealership_id: params.dealershipId,
-  });
+  const { data: team } = await supabase.rpc<DealerTeamRow[]>(
+    'get_dealer_team',
+    { p_dealership_id: params.dealershipId }
+  );
 
   const { data: invites } = await supabase
     .from('dealer_invitations')
