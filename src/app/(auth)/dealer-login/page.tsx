@@ -9,12 +9,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function DealerLoginPage() {
+export default function DealerLoginPage({
+  searchParams,
+}: {
+  searchParams?: { status?: string; invite?: string };
+}) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const status = searchParams?.status;
+  const invite = searchParams?.invite;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +41,13 @@ export default function DealerLoginPage() {
       }
 
       if (data.user) {
-        // Redirect to dealer gateway - it will handle dealership selection
-        router.push('/dealer');
+        // If returning from invite flow, redirect back to invite acceptance
+        if (invite) {
+          router.push(`/dealer-invite/${invite}`);
+        } else {
+          // Redirect to dealer gateway - it will handle dealership selection
+          router.push('/dealer');
+        }
         router.refresh(); // Force Next.js to rehydrate auth state
       }
     } catch (err) {
@@ -85,6 +97,12 @@ export default function DealerLoginPage() {
                 className="border-neutral-200 dark:border-neutral-800"
               />
             </div>
+            {status === 'invite-required' && (
+              <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">
+                You don't belong to any dealership yet.  
+                Ask a dealership manager to invite you.
+              </div>
+            )}
             {error && (
               <div className="rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 px-4 py-3 text-sm text-red-700 dark:text-red-400">
                 {error}
@@ -102,21 +120,21 @@ export default function DealerLoginPage() {
         <CardFooter className="flex flex-col space-y-4 border-t border-neutral-200 dark:border-neutral-800 pt-6">
           <div className="flex flex-col space-y-2 text-center text-sm">
             <p className="text-neutral-600 dark:text-neutral-400">
-              Don't have access?{' '}
-              <Link
-                href="/dealer-request-access"
-                className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                Request Access
-              </Link>
-            </p>
-            <p className="text-neutral-600 dark:text-neutral-400">
               Got an invite?{' '}
               <Link
                 href="/dealer-invite"
                 className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Accept Invite
+              </Link>
+            </p>
+            <p className="text-neutral-600 dark:text-neutral-400">
+              Don't have access?{' '}
+              <Link
+                href="/dealer-request-access"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Apply here
               </Link>
             </p>
           </div>

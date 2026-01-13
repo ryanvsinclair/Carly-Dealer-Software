@@ -1,5 +1,5 @@
-import { createSupabaseServer } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
+import { createSupabaseServer } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function DealerRootPage() {
   const supabase = createSupabaseServer();
@@ -9,22 +9,22 @@ export default async function DealerRootPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/dealer-login');
+    redirect("/dealer-login");
   }
 
   const { data: memberships, error } = await supabase
-    .from('dealer_memberships')
-    .select('dealership_id')
-    .eq('user_id', user.id)
-    .eq('is_active', true);
+    .from("dealer_memberships")
+    .select("dealership_id")
+    .eq("user_id", user.id)
+    .eq("is_active", true);
 
-  if (error || !memberships || memberships.length === 0) {
-    redirect('/dealer-request-access');
+  if (!memberships || memberships.length === 0) {
+    redirect("/dealer-login?status=invite-required");
   }
 
   if (memberships.length === 1) {
     redirect(`/dealer/${memberships[0].dealership_id}`);
   }
 
-  redirect('/dealer-select');
+  redirect("/dealer-select");
 }
