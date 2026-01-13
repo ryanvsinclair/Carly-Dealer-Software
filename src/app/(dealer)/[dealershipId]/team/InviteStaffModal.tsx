@@ -36,7 +36,7 @@ export function InviteStaffModal({
   const [error, setError] = useState<string | null>(null);
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState<Database['public']['Enums']['dealer_role'] | ''>('');
+  const [role, setRole] = useState<Database['public']['Enums']['dealer_role']>('salesperson');
 
   const generateToken = () => {
     const array = new Uint8Array(32);
