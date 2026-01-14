@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -9,19 +9,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function DealerLoginPage({
-  searchParams,
-}: {
-  searchParams?: { status?: string; invite?: string };
-}) {
+export default function DealerLoginPage() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const status = searchParams?.status;
-  const invite = searchParams?.invite;
+  const status = searchParams.get('status');
+  const next = searchParams.get('next');
+  const invite = searchParams.get('invite');
+
+  // Auto-redirect if already authenticated and has next param
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && next) {
+        router.push(next);
+      }
+    };
+    checkAuth();
+  }, [next, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +50,11 @@ export default function DealerLoginPage({
       }
 
       if (data.user) {
-        // If returning from invite flow, redirect back to invite acceptance
-        if (invite) {
+        // If there's a next param (e.g., from invite flow), redirect there
+        if (next) {
+          router.push(next);
+        } else if (invite) {
+          // Legacy invite param support
           router.push(`/dealer-invite/${invite}`);
         } else {
           // Redirect to dealer gateway - it will handle dealership selection
