@@ -37,8 +37,10 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    const loginUrl = new URL('/dealer-login', request.url)
-    return NextResponse.redirect(loginUrl)
+    const nextPath = request.nextUrl.pathname + request.nextUrl.search;
+    const loginUrl = new URL('/dealer-login', request.url);
+    loginUrl.searchParams.set('next', nextPath);
+    return NextResponse.redirect(loginUrl);
   }
 
   // Validate active membership

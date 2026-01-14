@@ -11,11 +11,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 interface DealerLoginFormProps {
   next?: string;
-  status?: string;
-  invite?: string;
 }
 
-export function DealerLoginForm({ next, status, invite }: DealerLoginFormProps) {
+export function DealerLoginForm({ next }: DealerLoginFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,17 +38,12 @@ export function DealerLoginForm({ next, status, invite }: DealerLoginFormProps) 
       }
 
       if (data.user) {
-        // If there's a next param (e.g., from invite flow), redirect there
         if (next) {
           router.push(next);
-        } else if (invite) {
-          // Legacy invite param support
-          router.push(`/dealer-invite/${invite}`);
         } else {
-          // Redirect to dealer gateway - it will handle dealership selection
           router.push('/dealer');
         }
-        router.refresh(); // Force Next.js to rehydrate auth state
+        router.refresh();
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
@@ -99,12 +92,6 @@ export function DealerLoginForm({ next, status, invite }: DealerLoginFormProps) 
                 className="border-neutral-200 dark:border-neutral-800"
               />
             </div>
-            {status === 'invite-required' && (
-              <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-600 dark:text-yellow-400">
-                You don't belong to any dealership yet.  
-                Ask a dealership manager to invite you.
-              </div>
-            )}
             {error && (
               <div className="rounded-md bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 px-4 py-3 text-sm text-red-700 dark:text-red-400">
                 {error}
@@ -121,15 +108,6 @@ export function DealerLoginForm({ next, status, invite }: DealerLoginFormProps) 
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 border-t border-neutral-200 dark:border-neutral-800 pt-6">
           <div className="flex flex-col space-y-2 text-center text-sm">
-            <p className="text-neutral-600 dark:text-neutral-400">
-              Got an invite?{' '}
-              <Link
-                href="/dealer-invite"
-                className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                Accept Invite
-              </Link>
-            </p>
             <p className="text-neutral-600 dark:text-neutral-400">
               Don't have access?{' '}
               <Link

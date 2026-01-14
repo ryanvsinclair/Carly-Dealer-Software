@@ -11,7 +11,8 @@ export default async function DealerInvitePage({
 }) {
   const token = searchParams.token;
 
-  if (!token) {
+  // 1. Token must exist and be a UUID only
+  if (!token || token.includes('/')) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0A0A0A] flex items-center justify-center p-6">
         <Card className="max-w-md w-full p-8 bg-white dark:bg-[#171717] border-[#E5E5E5] dark:border-[#262626]">
@@ -37,8 +38,11 @@ export default async function DealerInvitePage({
     data: { user },
   } = await supabase.auth.getUser();
 
+  // 2. If not logged in → redirect to login with encoded next
   if (!user) {
-    redirect(`/dealer-login?next=/dealer-invite?token=${token}`);
+    const nextPath = `/dealer-invite?token=${token}`;
+    const params = new URLSearchParams({ next: nextPath });
+    redirect(`/dealer-login?${params.toString()}`);
   }
 
   // Attempt to accept the invite
