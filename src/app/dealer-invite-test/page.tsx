@@ -1,24 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function DealerInviteTestPage() {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const router = useRouter();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!token || token.includes('/')) {
-      alert('Invalid token');
+    if (!token || token.includes("/")) {
+      alert("Invalid token");
       return;
     }
 
-    router.push(`/dealer-invite?token=${token}`);
+    // 🔑 IMPORTANT: encode the token
+    const params = new URLSearchParams({ token });
+    router.push(`/dealer-invite?${params.toString()}`);
   }
 
   return (
@@ -27,7 +29,7 @@ export default function DealerInviteTestPage() {
         <h1 className="text-xl font-bold">Internal Invite Test</h1>
 
         <p className="text-sm text-muted-foreground">
-          Paste a dealer invite token to simulate an invite link.
+          Paste a dealer invite token to continue the real invite flow.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
