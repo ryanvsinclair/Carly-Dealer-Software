@@ -1,49 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function DealerInviteTestPage() {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState('');
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent) {
+  function submit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!token || token.includes("/")) {
-      alert("Invalid token");
-      return;
-    }
+    if (!token) return alert('Missing token');
 
-    // 🔑 IMPORTANT: encode the token
     const params = new URLSearchParams({ token });
     router.push(`/dealer-invite?${params.toString()}`);
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA] dark:bg-[#0A0A0A] p-6">
-      <Card className="w-full max-w-md p-8 space-y-6">
-        <h1 className="text-xl font-bold">Internal Invite Test</h1>
+    <form onSubmit={submit} style={{ padding: 40 }}>
+      <h1>Internal Invite Test</h1>
 
-        <p className="text-sm text-muted-foreground">
-          Paste a dealer invite token to continue the real invite flow.
-        </p>
+      <input
+        value={token}
+        onChange={(e) => setToken(e.target.value)}
+        placeholder="Invite token"
+        style={{ width: '100%', padding: 8, marginTop: 12 }}
+      />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            placeholder="Invite token (UUID)"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-          />
-
-          <Button type="submit" className="w-full">
-            Continue
-          </Button>
-        </form>
-      </Card>
-    </div>
+      <button type="submit" style={{ marginTop: 12 }}>
+        Continue
+      </button>
+    </form>
   );
 }
