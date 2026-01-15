@@ -2,93 +2,36 @@ import { createSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function AcceptInvitePage({
-  params,
+  searchParams,
 }: {
-  params: { token: string };
+  searchParams: { token?: string };
 }) {
+  const token = searchParams.token;
+
+  if (!token || !/^[0-9a-f-]{36}$/i.test(token)) {
+    return <div className="p-8">Invalid invitation link.</div>;
+  }
+
   const supabase = createSupabaseServer();
-
-  const { data: invite } = await supabase
-    .from("dealer_invitations")
-    .select("id, email, dealership_id, role, status, expires_at")
-    .eq("token", params.token)
-    .single();
-
-  if (!invite || invite.status !== "pending") {
-    return <div className="p-8">This invitation is no longer valid.</div>;
-  }
-
-  if (new Date(invite.expires_at) < new Date()) {
-    return <div className="p-8">This invitation has expired.</div>;
-  }
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Not logged in → go to dealer login with return token
+  // Not logged in → redirect with encoded next
   if (!user) {
-    redirect(`/dealer-login?invite=${params.token}`);
+    const next = encodeURIComponent(`/dealer-invite?token=${token}`);
+    redirect(`/dealer-login?next=${next}`);
   }
 
-  // Must match invited email
-  if (user.email !== invite.email) {
-    return (
-      <div className="p-8">
-        You must sign in with <b>{invite.email}</b> to accept this invite.
-      </div>
-    );
+  // Accept invite atomically
+  const { data, error } = await supabase.rpc("accept_dealer_invite", {
+    invite_token: token,
+  });
+
+  if (error) {
+    return <div className="p-8">{error.message}</div>;
   }
 
-  return (
-    <form
-      action={async () => {
-        "use server";
-
-        const supabase = createSupabaseServer();
-
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (!user) throw new Error("Not authenticated");
-
-        // Create dealership membership
-        await supabase.from("dealer_memberships").insert([
-          {
-            user_id: user.id,
-            dealership_id: invite.dealership_id,
-            role: invite.role,
-            is_active: true,
-          },
-        ]);
-
-        // Mark invite accepted
-        await supabase
-          .from("dealer_invitations")
-          .update({
-            status: "accepted",
-            accepted_at: new Date().toISOString(),
-            accepted_by: user.id,
-          })
-          .eq("id", invite.id);
-
-        redirect("/dealer");
-      }}
-      className="p-8 max-w-md mx-auto space-y-6"
-    >
-      <h1 className="text-xl font-semibold">Accept dealership invitation</h1>
-
-      <p>
-        You are being invited as <b>{invite.role}</b>.
-      </p>
-
-      <button
-        type="submit"
-        className="w-full py-2 rounded bg-primary text-primary-foreground"
-      >
-        Accept Invitation
-      </button>
-    </form>
-  );
+  redirect(`/dealer/${data.dealership_id}`);
 }
