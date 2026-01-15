@@ -1,3 +1,7 @@
+-- Drop existing function to allow return type change
+drop function if exists public.accept_dealer_invite(text);
+
+-- Recreate with table return type
 create or replace function public.accept_dealer_invite(invite_token text)
 returns table (dealership_id uuid)
 language plpgsql

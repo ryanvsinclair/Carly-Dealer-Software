@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses_on: {
+        Row: {
+          centroid: unknown
+          city: string | null
+          civic_number: string | null
+          fsa: string | null
+          full_address: string | null
+          geog: unknown
+          geom: unknown
+          id: number
+          latitude: number | null
+          longitude: number | null
+          postal_code: string | null
+          province_code: string | null
+          street_direction: string | null
+          street_name: string | null
+          street_type: string | null
+          unit: string | null
+        }
+        Insert: {
+          centroid?: unknown
+          city?: string | null
+          civic_number?: string | null
+          fsa?: string | null
+          full_address?: string | null
+          geog?: unknown
+          geom?: unknown
+          id?: never
+          latitude?: number | null
+          longitude?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Update: {
+          centroid?: unknown
+          city?: string | null
+          civic_number?: string | null
+          fsa?: string | null
+          full_address?: string | null
+          geog?: unknown
+          geom?: unknown
+          id?: never
+          latitude?: number | null
+          longitude?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
       dealer_access_requests: {
         Row: {
           admin_notes: string | null
@@ -297,12 +354,15 @@ export type Database = {
         Row: {
           account_status: Database["public"]["Enums"]["dealership_account_status"]
           address: string | null
+          address_id: number | null
           banner_url: string | null
           business_number: string | null
           city: string | null
           created_at: string
           dealer_group_id: string | null
           email: string | null
+          fsa: string | null
+          geom: unknown
           id: string
           latitude: number | null
           legal_name: string | null
@@ -320,12 +380,15 @@ export type Database = {
         Insert: {
           account_status?: Database["public"]["Enums"]["dealership_account_status"]
           address?: string | null
+          address_id?: number | null
           banner_url?: string | null
           business_number?: string | null
           city?: string | null
           created_at?: string
           dealer_group_id?: string | null
           email?: string | null
+          fsa?: string | null
+          geom?: unknown
           id?: string
           latitude?: number | null
           legal_name?: string | null
@@ -343,12 +406,15 @@ export type Database = {
         Update: {
           account_status?: Database["public"]["Enums"]["dealership_account_status"]
           address?: string | null
+          address_id?: number | null
           banner_url?: string | null
           business_number?: string | null
           city?: string | null
           created_at?: string
           dealer_group_id?: string | null
           email?: string | null
+          fsa?: string | null
+          geom?: unknown
           id?: string
           latitude?: number | null
           legal_name?: string | null
@@ -365,6 +431,27 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "dealerships_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses_on"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dealerships_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "v_addresses_canonical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dealerships_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "v_addresses_canonical_on"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "dealerships_dealer_group_id_fkey"
             columns: ["dealer_group_id"]
             isOneToOne: false
@@ -373,35 +460,276 @@ export type Database = {
           },
         ]
       }
+      fsa_import: {
+        Row: {
+          cfsauid: string | null
+          dguid: string | null
+          geom: unknown
+          landarea: number | null
+          ogc_fid: number
+          prname: string | null
+          pruid: string | null
+        }
+        Insert: {
+          cfsauid?: string | null
+          dguid?: string | null
+          geom?: unknown
+          landarea?: number | null
+          ogc_fid?: number
+          prname?: string | null
+          pruid?: string | null
+        }
+        Update: {
+          cfsauid?: string | null
+          dguid?: string | null
+          geom?: unknown
+          landarea?: number | null
+          ogc_fid?: number
+          prname?: string | null
+          pruid?: string | null
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           city: string | null
           country_code: string | null
-          latitude: number | null
-          longitude: number | null
+          latitude: number
+          longitude: number
           postal_code: string | null
           province_code: string | null
         }
         Insert: {
           city?: string | null
           country_code?: string | null
-          latitude?: number | null
-          longitude?: number | null
+          latitude: number
+          longitude: number
           postal_code?: string | null
           province_code?: string | null
         }
         Update: {
           city?: string | null
           country_code?: string | null
+          latitude?: number
+          longitude?: number
+          postal_code?: string | null
+          province_code?: string | null
+        }
+        Relationships: []
+      }
+      oda_qc_raw: {
+        Row: {
+          city: string | null
+          city_pcs: string | null
+          csdname: string | null
+          csduid: number | null
+          dedupe_key: string | null
+          full_addr: string | null
+          geom: unknown
+          group_id: number | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          ogc_fid: number
+          postal_code: string | null
+          provider: string | null
+          pruid: number | null
+          source_id: number | null
+          str_dir: string | null
+          str_dir_pcs: string | null
+          str_name: string | null
+          str_name_pcs: string | null
+          str_type: string | null
+          str_type_pcs: string | null
+          street: string | null
+          street_no: number | null
+          unit: string | null
+        }
+        Insert: {
+          city?: string | null
+          city_pcs?: string | null
+          csdname?: string | null
+          csduid?: number | null
+          dedupe_key?: string | null
+          full_addr?: string | null
+          geom: unknown
+          group_id?: number | null
+          id?: string | null
           latitude?: number | null
           longitude?: number | null
+          ogc_fid?: number
           postal_code?: string | null
+          provider?: string | null
+          pruid?: number | null
+          source_id?: number | null
+          str_dir?: string | null
+          str_dir_pcs?: string | null
+          str_name?: string | null
+          str_name_pcs?: string | null
+          str_type?: string | null
+          str_type_pcs?: string | null
+          street?: string | null
+          street_no?: number | null
+          unit?: string | null
+        }
+        Update: {
+          city?: string | null
+          city_pcs?: string | null
+          csdname?: string | null
+          csduid?: number | null
+          dedupe_key?: string | null
+          full_addr?: string | null
+          geom?: unknown
+          group_id?: number | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          ogc_fid?: number
+          postal_code?: string | null
+          provider?: string | null
+          pruid?: number | null
+          source_id?: number | null
+          str_dir?: string | null
+          str_dir_pcs?: string | null
+          str_name?: string | null
+          str_name_pcs?: string | null
+          str_type?: string | null
+          str_type_pcs?: string | null
+          street?: string | null
+          street_no?: number | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      oda_raw: {
+        Row: {
+          city: string | null
+          city_pcs: string | null
+          csdname: string | null
+          csduid: number | null
+          full_addr: string | null
+          group_id: number | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          ogc_fid: number
+          postal_code: string | null
+          provider: string | null
+          pruid: number | null
+          source_id: string | null
+          str_dir: string | null
+          str_dir_pcs: string | null
+          str_name: string | null
+          str_name_pcs: string | null
+          str_type: string | null
+          str_type_pcs: string | null
+          street: string | null
+          street_no: string | null
+          unit: string | null
+        }
+        Insert: {
+          city?: string | null
+          city_pcs?: string | null
+          csdname?: string | null
+          csduid?: number | null
+          full_addr?: string | null
+          group_id?: number | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          ogc_fid?: number
+          postal_code?: string | null
+          provider?: string | null
+          pruid?: number | null
+          source_id?: string | null
+          str_dir?: string | null
+          str_dir_pcs?: string | null
+          str_name?: string | null
+          str_name_pcs?: string | null
+          str_type?: string | null
+          str_type_pcs?: string | null
+          street?: string | null
+          street_no?: string | null
+          unit?: string | null
+        }
+        Update: {
+          city?: string | null
+          city_pcs?: string | null
+          csdname?: string | null
+          csduid?: number | null
+          full_addr?: string | null
+          group_id?: number | null
+          id?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          ogc_fid?: number
+          postal_code?: string | null
+          provider?: string | null
+          pruid?: number | null
+          source_id?: string | null
+          str_dir?: string | null
+          str_dir_pcs?: string | null
+          str_name?: string | null
+          str_name_pcs?: string | null
+          str_type?: string | null
+          str_type_pcs?: string | null
+          street?: string | null
+          street_no?: string | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      postal_code_areas: {
+        Row: {
+          fsa: string
+          geom: unknown
+          id: number
+          postal_code: string
+          province_code: string | null
+        }
+        Insert: {
+          fsa: string
+          geom: unknown
+          id?: number
+          postal_code: string
+          province_code?: string | null
+        }
+        Update: {
+          fsa?: string
+          geom?: unknown
+          id?: number
+          postal_code?: string
+          province_code?: string | null
+        }
+        Relationships: []
+      }
+      postal_fsa_areas: {
+        Row: {
+          fsa: string
+          geom: unknown
+          id: number
+          name: string | null
+          province_code: string | null
+        }
+        Insert: {
+          fsa: string
+          geom: unknown
+          id?: number
+          name?: string | null
+          province_code?: string | null
+        }
+        Update: {
+          fsa?: string
+          geom?: unknown
+          id?: number
+          name?: string | null
           province_code?: string | null
         }
         Relationships: []
       }
       profiles: {
         Row: {
+          address_id: number | null
           city: string | null
           country_code: string | null
           created_at: string | null
@@ -416,6 +744,7 @@ export type Database = {
           role: string | null
         }
         Insert: {
+          address_id?: number | null
           city?: string | null
           country_code?: string | null
           created_at?: string | null
@@ -430,6 +759,7 @@ export type Database = {
           role?: string | null
         }
         Update: {
+          address_id?: number | null
           city?: string | null
           country_code?: string | null
           created_at?: string | null
@@ -442,6 +772,52 @@ export type Database = {
           postal_code?: string | null
           province_code?: string | null
           role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses_on"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "v_addresses_canonical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "v_addresses_canonical_on"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spatial_ref_sys: {
+        Row: {
+          auth_name: string | null
+          auth_srid: number | null
+          proj4text: string | null
+          srid: number
+          srtext: string | null
+        }
+        Insert: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid: number
+          srtext?: string | null
+        }
+        Update: {
+          auth_name?: string | null
+          auth_srid?: number | null
+          proj4text?: string | null
+          srid?: number
+          srtext?: string | null
         }
         Relationships: []
       }
@@ -522,14 +898,360 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      geography_columns: {
+        Row: {
+          coord_dimension: number | null
+          f_geography_column: unknown
+          f_table_catalog: unknown
+          f_table_name: unknown
+          f_table_schema: unknown
+          srid: number | null
+          type: string | null
+        }
+        Relationships: []
+      }
+      geometry_columns: {
+        Row: {
+          coord_dimension: number | null
+          f_geometry_column: unknown
+          f_table_catalog: string | null
+          f_table_name: unknown
+          f_table_schema: unknown
+          srid: number | null
+          type: string | null
+        }
+        Insert: {
+          coord_dimension?: number | null
+          f_geometry_column?: unknown
+          f_table_catalog?: string | null
+          f_table_name?: unknown
+          f_table_schema?: unknown
+          srid?: number | null
+          type?: string | null
+        }
+        Update: {
+          coord_dimension?: number | null
+          f_geometry_column?: unknown
+          f_table_catalog?: string | null
+          f_table_name?: unknown
+          f_table_schema?: unknown
+          srid?: number | null
+          type?: string | null
+        }
+        Relationships: []
+      }
+      oda_on_ready: {
+        Row: {
+          city: string | null
+          civic_number: string | null
+          full_address: string | null
+          latitude: number | null
+          longitude: number | null
+          province_code: string | null
+          street_direction: string | null
+          street_name: string | null
+          street_type: string | null
+          unit: string | null
+        }
+        Insert: {
+          city?: string | null
+          civic_number?: string | null
+          full_address?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          province_code?: never
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Update: {
+          city?: string | null
+          civic_number?: string | null
+          full_address?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          province_code?: never
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      v_addresses_canonical: {
+        Row: {
+          centroid: unknown
+          city: string | null
+          civic_number: string | null
+          fsa: string | null
+          full_address: string | null
+          id: number | null
+          latitude: number | null
+          longitude: number | null
+          postal_code: string | null
+          province_code: string | null
+          street_direction: string | null
+          street_name: string | null
+          street_type: string | null
+          unit: string | null
+        }
+        Insert: {
+          centroid?: unknown
+          city?: string | null
+          civic_number?: string | null
+          fsa?: string | null
+          full_address?: string | null
+          id?: number | null
+          latitude?: number | null
+          longitude?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Update: {
+          centroid?: unknown
+          city?: string | null
+          civic_number?: string | null
+          fsa?: string | null
+          full_address?: string | null
+          id?: number | null
+          latitude?: number | null
+          longitude?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      v_addresses_canonical_on: {
+        Row: {
+          city: string | null
+          dedupe_key: string | null
+          geom: unknown
+          id: number | null
+          postal_code: string | null
+          province_code: string | null
+          street_direction: string | null
+          street_name: string | null
+          street_no: string | null
+          street_type: string | null
+          unit: string | null
+        }
+        Insert: {
+          city?: string | null
+          dedupe_key?: never
+          geom?: unknown
+          id?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_no?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Update: {
+          city?: string | null
+          dedupe_key?: never
+          geom?: unknown
+          id?: number | null
+          postal_code?: string | null
+          province_code?: string | null
+          street_direction?: string | null
+          street_name?: string | null
+          street_no?: string | null
+          street_type?: string | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
+      v_addresses_qc: {
+        Row: {
+          city: string | null
+          dedupe_key: string | null
+          geom: unknown
+          id: string | null
+          postal_code: string | null
+          str_dir: string | null
+          str_name: string | null
+          str_type: string | null
+          street_no: number | null
+          unit: string | null
+        }
+        Insert: {
+          city?: string | null
+          dedupe_key?: string | null
+          geom?: unknown
+          id?: string | null
+          postal_code?: string | null
+          str_dir?: string | null
+          str_name?: string | null
+          str_type?: string | null
+          street_no?: number | null
+          unit?: string | null
+        }
+        Update: {
+          city?: string | null
+          dedupe_key?: string | null
+          geom?: unknown
+          id?: string | null
+          postal_code?: string | null
+          str_dir?: string | null
+          str_name?: string | null
+          str_type?: string | null
+          street_no?: number | null
+          unit?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      accept_dealer_invite: { Args: { invite_token: string }; Returns: string }
-      approve_dealer_application: {
-        Args: { p_application_id: string }
+      _postgis_deprecate: {
+        Args: { newname: string; oldname: string; version: string }
+        Returns: undefined
+      }
+      _postgis_index_extent: {
+        Args: { col: string; tbl: unknown }
+        Returns: unknown
+      }
+      _postgis_pgsql_version: { Args: never; Returns: string }
+      _postgis_scripts_pgsql_version: { Args: never; Returns: string }
+      _postgis_selectivity: {
+        Args: { att_name: string; geom: unknown; mode?: string; tbl: unknown }
+        Returns: number
+      }
+      _postgis_stats: {
+        Args: { ""?: string; att_name: string; tbl: unknown }
+        Returns: string
+      }
+      _st_3dintersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_containsproperly: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_coveredby:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_covers:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_crosses: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_dwithin: {
+        Args: {
+          geog1: unknown
+          geog2: unknown
+          tolerance: number
+          use_spheroid?: boolean
+        }
+        Returns: boolean
+      }
+      _st_equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      _st_intersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_linecrossingdirection: {
+        Args: { line1: unknown; line2: unknown }
+        Returns: number
+      }
+      _st_longestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      _st_maxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      _st_orderingequals: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_sortablehash: { Args: { geom: unknown }; Returns: number }
+      _st_touches: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      _st_voronoi: {
+        Args: {
+          clip?: unknown
+          g1: unknown
+          return_polygons?: boolean
+          tolerance?: number
+        }
+        Returns: unknown
+      }
+      _st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      accept_dealer_invite: {
+        Args: { invite_token: string }
         Returns: {
           dealership_id: string
+        }[]
+      }
+      addauth: { Args: { "": string }; Returns: boolean }
+      addgeometrycolumn:
+        | {
+            Args: {
+              catalog_name: string
+              column_name: string
+              new_dim: number
+              new_srid_in: number
+              new_type: string
+              schema_name: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              column_name: string
+              new_dim: number
+              new_srid: number
+              new_type: string
+              schema_name: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              column_name: string
+              new_dim: number
+              new_srid: number
+              new_type: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+      approve_dealer_application: {
+        Args: { p_admin_notes?: string; p_application_id: string }
+        Returns: {
+          application_id: string
+          dealership_id: string
+          expires_at: string
           invitation_id: string
           invite_email: string
           invite_token: string
@@ -576,6 +1298,162 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      disablelongtransactions: { Args: never; Returns: string }
+      dropgeometrycolumn:
+        | {
+            Args: {
+              catalog_name: string
+              column_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              column_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+        | { Args: { column_name: string; table_name: string }; Returns: string }
+      dropgeometrytable:
+        | {
+            Args: {
+              catalog_name: string
+              schema_name: string
+              table_name: string
+            }
+            Returns: string
+          }
+        | { Args: { schema_name: string; table_name: string }; Returns: string }
+        | { Args: { table_name: string }; Returns: string }
+      enablelongtransactions: { Args: never; Returns: string }
+      equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      find_dealers_near: {
+        Args: { p_lat: number; p_lng: number; p_radius_km: number }
+        Returns: {
+          city: string
+          dealership_id: string
+          distance_km: number
+          name: string
+          province_code: string
+        }[]
+      }
+      geometry: { Args: { "": string }; Returns: unknown }
+      geometry_above: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_below: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_cmp: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_contained_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_contains_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_distance_box: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_distance_centroid: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      geometry_eq: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_ge: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_gt: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_le: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_left: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_lt: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overabove: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overbelow: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overlaps_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overleft: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_overright: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_right: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_same: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_same_3d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geometry_within: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      geomfromewkt: { Args: { "": string }; Returns: unknown }
+      get_admin_dashboard: { Args: never; Returns: Json }
+      get_admin_invitations: {
+        Args: never
+        Returns: {
+          created_at: string
+          dealership_id: string
+          dealership_name: string
+          email: string
+          expires_at: string
+          invitation_id: string
+          invited_by: string
+          role: Database["public"]["Enums"]["dealer_role"]
+          status: string
+        }[]
       }
       get_dealer_inventory: {
         Args: { p_dealership_id: string }
@@ -625,6 +1503,7 @@ export type Database = {
           role: Database["public"]["Enums"]["dealer_role"]
         }[]
       }
+      gettransactionid: { Args: never; Returns: unknown }
       has_dealer_permission: {
         Args: {
           p_dealership_id: string
@@ -643,6 +1522,47 @@ export type Database = {
         Args: { _dealership_id: string; _user_id: string }
         Returns: boolean
       }
+      longtransactionsenabled: { Args: never; Returns: boolean }
+      populate_geometry_columns:
+        | { Args: { tbl_oid: unknown; use_typmod?: boolean }; Returns: number }
+        | { Args: { use_typmod?: boolean }; Returns: string }
+      postgis_constraint_dims: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: number
+      }
+      postgis_constraint_srid: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: number
+      }
+      postgis_constraint_type: {
+        Args: { geomcolumn: string; geomschema: string; geomtable: string }
+        Returns: string
+      }
+      postgis_extensions_upgrade: { Args: never; Returns: string }
+      postgis_full_version: { Args: never; Returns: string }
+      postgis_geos_version: { Args: never; Returns: string }
+      postgis_lib_build_date: { Args: never; Returns: string }
+      postgis_lib_revision: { Args: never; Returns: string }
+      postgis_lib_version: { Args: never; Returns: string }
+      postgis_libjson_version: { Args: never; Returns: string }
+      postgis_liblwgeom_version: { Args: never; Returns: string }
+      postgis_libprotobuf_version: { Args: never; Returns: string }
+      postgis_libxml_version: { Args: never; Returns: string }
+      postgis_proj_version: { Args: never; Returns: string }
+      postgis_scripts_build_date: { Args: never; Returns: string }
+      postgis_scripts_installed: { Args: never; Returns: string }
+      postgis_scripts_released: { Args: never; Returns: string }
+      postgis_svn_version: { Args: never; Returns: string }
+      postgis_type_name: {
+        Args: {
+          coord_dimension: number
+          geomname: string
+          use_new_name?: boolean
+        }
+        Returns: string
+      }
+      postgis_version: { Args: never; Returns: string }
+      postgis_wagyu_version: { Args: never; Returns: string }
       publish_dealer_vehicle: {
         Args: { p_vehicle_id: string }
         Returns: {
@@ -651,13 +1571,33 @@ export type Database = {
           updated_at: string
         }[]
       }
+      reject_dealer_application: {
+        Args: { p_application_id: string; p_notes: string }
+        Returns: {
+          application_id: string
+          status: string
+        }[]
+      }
       resolve_postal_code: {
         Args: { p_postal_code: string }
         Returns: {
           city: string
-          country_code: string
+          fsa: string
+          geom: unknown
           latitude: number
           longitude: number
+          postal_code: string
+          province_code: string
+        }[]
+      }
+      search_addresses: {
+        Args: { p_limit?: number; p_query: string }
+        Returns: {
+          city: string
+          fsa: string
+          full_address: string
+          id: number
+          postal_code: string
           province_code: string
         }[]
       }
@@ -671,6 +1611,600 @@ export type Database = {
           postal_code: string
           province_code: string
         }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+      st_3dclosestpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3ddistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_3dintersects: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_3dlongestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3dmakebox: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_3dmaxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_3dshortestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_addpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_angle:
+        | { Args: { line1: unknown; line2: unknown }; Returns: number }
+        | {
+            Args: { pt1: unknown; pt2: unknown; pt3: unknown; pt4?: unknown }
+            Returns: number
+          }
+      st_area:
+        | { Args: { geog: unknown; use_spheroid?: boolean }; Returns: number }
+        | { Args: { "": string }; Returns: number }
+      st_asencodedpolyline: {
+        Args: { geom: unknown; nprecision?: number }
+        Returns: string
+      }
+      st_asewkt: { Args: { "": string }; Returns: string }
+      st_asgeojson:
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | {
+            Args: {
+              geom_column?: string
+              maxdecimaldigits?: number
+              pretty_bool?: boolean
+              r: Record<string, unknown>
+            }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_asgml:
+        | {
+            Args: {
+              geog: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+            }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+        | {
+            Args: {
+              geog: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+              version: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              geom: unknown
+              id?: string
+              maxdecimaldigits?: number
+              nprefix?: string
+              options?: number
+              version: number
+            }
+            Returns: string
+          }
+      st_askml:
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; nprefix?: string }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; nprefix?: string }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_aslatlontext: {
+        Args: { geom: unknown; tmpl?: string }
+        Returns: string
+      }
+      st_asmarc21: { Args: { format?: string; geom: unknown }; Returns: string }
+      st_asmvtgeom: {
+        Args: {
+          bounds: unknown
+          buffer?: number
+          clip_geom?: boolean
+          extent?: number
+          geom: unknown
+        }
+        Returns: unknown
+      }
+      st_assvg:
+        | {
+            Args: { geog: unknown; maxdecimaldigits?: number; rel?: number }
+            Returns: string
+          }
+        | {
+            Args: { geom: unknown; maxdecimaldigits?: number; rel?: number }
+            Returns: string
+          }
+        | { Args: { "": string }; Returns: string }
+      st_astext: { Args: { "": string }; Returns: string }
+      st_astwkb:
+        | {
+            Args: {
+              geom: unknown
+              prec?: number
+              prec_m?: number
+              prec_z?: number
+              with_boxes?: boolean
+              with_sizes?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              geom: unknown[]
+              ids: number[]
+              prec?: number
+              prec_m?: number
+              prec_z?: number
+              with_boxes?: boolean
+              with_sizes?: boolean
+            }
+            Returns: string
+          }
+      st_asx3d: {
+        Args: { geom: unknown; maxdecimaldigits?: number; options?: number }
+        Returns: string
+      }
+      st_azimuth:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: number }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+      st_boundingdiagonal: {
+        Args: { fits?: boolean; geom: unknown }
+        Returns: unknown
+      }
+      st_buffer:
+        | {
+            Args: { geom: unknown; options?: string; radius: number }
+            Returns: unknown
+          }
+        | {
+            Args: { geom: unknown; quadsegs: number; radius: number }
+            Returns: unknown
+          }
+      st_centroid: { Args: { "": string }; Returns: unknown }
+      st_clipbybox2d: {
+        Args: { box: unknown; geom: unknown }
+        Returns: unknown
+      }
+      st_closestpoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_collect: { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+      st_concavehull: {
+        Args: {
+          param_allow_holes?: boolean
+          param_geom: unknown
+          param_pctconvex: number
+        }
+        Returns: unknown
+      }
+      st_contains: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_containsproperly: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_coorddim: { Args: { geometry: unknown }; Returns: number }
+      st_coveredby:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_covers:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_crosses: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_curvetoline: {
+        Args: { flags?: number; geom: unknown; tol?: number; toltype?: number }
+        Returns: unknown
+      }
+      st_delaunaytriangles: {
+        Args: { flags?: number; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_difference: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_disjoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_distance:
+        | {
+            Args: { geog1: unknown; geog2: unknown; use_spheroid?: boolean }
+            Returns: number
+          }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+      st_distancesphere:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: number }
+        | {
+            Args: { geom1: unknown; geom2: unknown; radius: number }
+            Returns: number
+          }
+      st_distancespheroid: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_dwithin: {
+        Args: {
+          geog1: unknown
+          geog2: unknown
+          tolerance: number
+          use_spheroid?: boolean
+        }
+        Returns: boolean
+      }
+      st_equals: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_expand:
+        | { Args: { box: unknown; dx: number; dy: number }; Returns: unknown }
+        | {
+            Args: { box: unknown; dx: number; dy: number; dz?: number }
+            Returns: unknown
+          }
+        | {
+            Args: {
+              dm?: number
+              dx: number
+              dy: number
+              dz?: number
+              geom: unknown
+            }
+            Returns: unknown
+          }
+      st_force3d: { Args: { geom: unknown; zvalue?: number }; Returns: unknown }
+      st_force3dm: {
+        Args: { geom: unknown; mvalue?: number }
+        Returns: unknown
+      }
+      st_force3dz: {
+        Args: { geom: unknown; zvalue?: number }
+        Returns: unknown
+      }
+      st_force4d: {
+        Args: { geom: unknown; mvalue?: number; zvalue?: number }
+        Returns: unknown
+      }
+      st_generatepoints:
+        | { Args: { area: unknown; npoints: number }; Returns: unknown }
+        | {
+            Args: { area: unknown; npoints: number; seed: number }
+            Returns: unknown
+          }
+      st_geogfromtext: { Args: { "": string }; Returns: unknown }
+      st_geographyfromtext: { Args: { "": string }; Returns: unknown }
+      st_geohash:
+        | { Args: { geog: unknown; maxchars?: number }; Returns: string }
+        | { Args: { geom: unknown; maxchars?: number }; Returns: string }
+      st_geomcollfromtext: { Args: { "": string }; Returns: unknown }
+      st_geometricmedian: {
+        Args: {
+          fail_if_not_converged?: boolean
+          g: unknown
+          max_iter?: number
+          tolerance?: number
+        }
+        Returns: unknown
+      }
+      st_geometryfromtext: { Args: { "": string }; Returns: unknown }
+      st_geomfromewkt: { Args: { "": string }; Returns: unknown }
+      st_geomfromgeojson:
+        | { Args: { "": Json }; Returns: unknown }
+        | { Args: { "": Json }; Returns: unknown }
+        | { Args: { "": string }; Returns: unknown }
+      st_geomfromgml: { Args: { "": string }; Returns: unknown }
+      st_geomfromkml: { Args: { "": string }; Returns: unknown }
+      st_geomfrommarc21: { Args: { marc21xml: string }; Returns: unknown }
+      st_geomfromtext: { Args: { "": string }; Returns: unknown }
+      st_gmltosql: { Args: { "": string }; Returns: unknown }
+      st_hasarc: { Args: { geometry: unknown }; Returns: boolean }
+      st_hausdorffdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_hexagon: {
+        Args: { cell_i: number; cell_j: number; origin?: unknown; size: number }
+        Returns: unknown
+      }
+      st_hexagongrid: {
+        Args: { bounds: unknown; size: number }
+        Returns: Record<string, unknown>[]
+      }
+      st_interpolatepoint: {
+        Args: { line: unknown; point: unknown }
+        Returns: number
+      }
+      st_intersection: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_intersects:
+        | { Args: { geog1: unknown; geog2: unknown }; Returns: boolean }
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_isvaliddetail: {
+        Args: { flags?: number; geom: unknown }
+        Returns: Database["public"]["CompositeTypes"]["valid_detail"]
+        SetofOptions: {
+          from: "*"
+          to: "valid_detail"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      st_length:
+        | { Args: { geog: unknown; use_spheroid?: boolean }; Returns: number }
+        | { Args: { "": string }; Returns: number }
+      st_letters: { Args: { font?: Json; letters: string }; Returns: unknown }
+      st_linecrossingdirection: {
+        Args: { line1: unknown; line2: unknown }
+        Returns: number
+      }
+      st_linefromencodedpolyline: {
+        Args: { nprecision?: number; txtin: string }
+        Returns: unknown
+      }
+      st_linefromtext: { Args: { "": string }; Returns: unknown }
+      st_linelocatepoint: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_linetocurve: { Args: { geometry: unknown }; Returns: unknown }
+      st_locatealong: {
+        Args: { geometry: unknown; leftrightoffset?: number; measure: number }
+        Returns: unknown
+      }
+      st_locatebetween: {
+        Args: {
+          frommeasure: number
+          geometry: unknown
+          leftrightoffset?: number
+          tomeasure: number
+        }
+        Returns: unknown
+      }
+      st_locatebetweenelevations: {
+        Args: { fromelevation: number; geometry: unknown; toelevation: number }
+        Returns: unknown
+      }
+      st_longestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makebox2d: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makeline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_makevalid: {
+        Args: { geom: unknown; params: string }
+        Returns: unknown
+      }
+      st_maxdistance: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: number
+      }
+      st_minimumboundingcircle: {
+        Args: { inputgeom: unknown; segs_per_quarter?: number }
+        Returns: unknown
+      }
+      st_mlinefromtext: { Args: { "": string }; Returns: unknown }
+      st_mpointfromtext: { Args: { "": string }; Returns: unknown }
+      st_mpolyfromtext: { Args: { "": string }; Returns: unknown }
+      st_multilinestringfromtext: { Args: { "": string }; Returns: unknown }
+      st_multipointfromtext: { Args: { "": string }; Returns: unknown }
+      st_multipolygonfromtext: { Args: { "": string }; Returns: unknown }
+      st_node: { Args: { g: unknown }; Returns: unknown }
+      st_normalize: { Args: { geom: unknown }; Returns: unknown }
+      st_offsetcurve: {
+        Args: { distance: number; line: unknown; params?: string }
+        Returns: unknown
+      }
+      st_orderingequals: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_overlaps: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: boolean
+      }
+      st_perimeter: {
+        Args: { geog: unknown; use_spheroid?: boolean }
+        Returns: number
+      }
+      st_pointfromtext: { Args: { "": string }; Returns: unknown }
+      st_pointm: {
+        Args: {
+          mcoordinate: number
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+        }
+        Returns: unknown
+      }
+      st_pointz: {
+        Args: {
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+          zcoordinate: number
+        }
+        Returns: unknown
+      }
+      st_pointzm: {
+        Args: {
+          mcoordinate: number
+          srid?: number
+          xcoordinate: number
+          ycoordinate: number
+          zcoordinate: number
+        }
+        Returns: unknown
+      }
+      st_polyfromtext: { Args: { "": string }; Returns: unknown }
+      st_polygonfromtext: { Args: { "": string }; Returns: unknown }
+      st_project: {
+        Args: { azimuth: number; distance: number; geog: unknown }
+        Returns: unknown
+      }
+      st_quantizecoordinates: {
+        Args: {
+          g: unknown
+          prec_m?: number
+          prec_x: number
+          prec_y?: number
+          prec_z?: number
+        }
+        Returns: unknown
+      }
+      st_reduceprecision: {
+        Args: { geom: unknown; gridsize: number }
+        Returns: unknown
+      }
+      st_relate: { Args: { geom1: unknown; geom2: unknown }; Returns: string }
+      st_removerepeatedpoints: {
+        Args: { geom: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_segmentize: {
+        Args: { geog: unknown; max_segment_length: number }
+        Returns: unknown
+      }
+      st_setsrid:
+        | { Args: { geog: unknown; srid: number }; Returns: unknown }
+        | { Args: { geom: unknown; srid: number }; Returns: unknown }
+      st_sharedpaths: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_shortestline: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_simplifypolygonhull: {
+        Args: { geom: unknown; is_outer?: boolean; vertex_fraction: number }
+        Returns: unknown
+      }
+      st_split: { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+      st_square: {
+        Args: { cell_i: number; cell_j: number; origin?: unknown; size: number }
+        Returns: unknown
+      }
+      st_squaregrid: {
+        Args: { bounds: unknown; size: number }
+        Returns: Record<string, unknown>[]
+      }
+      st_srid:
+        | { Args: { geog: unknown }; Returns: number }
+        | { Args: { geom: unknown }; Returns: number }
+      st_subdivide: {
+        Args: { geom: unknown; gridsize?: number; maxvertices?: number }
+        Returns: unknown[]
+      }
+      st_swapordinates: {
+        Args: { geom: unknown; ords: unknown }
+        Returns: unknown
+      }
+      st_symdifference: {
+        Args: { geom1: unknown; geom2: unknown; gridsize?: number }
+        Returns: unknown
+      }
+      st_symmetricdifference: {
+        Args: { geom1: unknown; geom2: unknown }
+        Returns: unknown
+      }
+      st_tileenvelope: {
+        Args: {
+          bounds?: unknown
+          margin?: number
+          x: number
+          y: number
+          zoom: number
+        }
+        Returns: unknown
+      }
+      st_touches: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_transform:
+        | {
+            Args: { from_proj: string; geom: unknown; to_proj: string }
+            Returns: unknown
+          }
+        | {
+            Args: { from_proj: string; geom: unknown; to_srid: number }
+            Returns: unknown
+          }
+        | { Args: { geom: unknown; to_proj: string }; Returns: unknown }
+      st_triangulatepolygon: { Args: { g1: unknown }; Returns: unknown }
+      st_union:
+        | { Args: { geom1: unknown; geom2: unknown }; Returns: unknown }
+        | {
+            Args: { geom1: unknown; geom2: unknown; gridsize: number }
+            Returns: unknown
+          }
+      st_voronoilines: {
+        Args: { extend_to?: unknown; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_voronoipolygons: {
+        Args: { extend_to?: unknown; g1: unknown; tolerance?: number }
+        Returns: unknown
+      }
+      st_within: { Args: { geom1: unknown; geom2: unknown }; Returns: boolean }
+      st_wkbtosql: { Args: { wkb: string }; Returns: unknown }
+      st_wkttosql: { Args: { "": string }; Returns: unknown }
+      st_wrapx: {
+        Args: { geom: unknown; move: number; wrap: number }
+        Returns: unknown
+      }
+      unlockrows: { Args: { "": string }; Returns: number }
+      updategeometrysrid: {
+        Args: {
+          catalogn_name: string
+          column_name: string
+          new_srid_in: number
+          schema_name: string
+          table_name: string
+        }
+        Returns: string
       }
     }
     Enums: {
@@ -687,7 +2221,15 @@ export type Database = {
       vehicle_sale_status: "available" | "pending" | "sold"
     }
     CompositeTypes: {
-      [_ in never]: never
+      geometry_dump: {
+        path: number[] | null
+        geom: unknown
+      }
+      valid_detail: {
+        valid: boolean | null
+        reason: string | null
+        location: unknown
+      }
     }
   }
 }
