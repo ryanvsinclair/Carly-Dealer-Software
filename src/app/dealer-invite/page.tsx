@@ -46,12 +46,12 @@ export default async function DealerInvitePage({
   }
 
   // Attempt to accept the invite
-  const { data: dealershipId, error } = await supabase.rpc(
+  const { data, error } = await supabase.rpc(
     'accept_dealer_invite',
     { invite_token: token }
   );
 
-  if (error) {
+  if (error || !data || data.length === 0) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0A0A0A] flex items-center justify-center p-6">
         <Card className="max-w-md w-full p-8 bg-white dark:bg-[#171717] border-[#E5E5E5] dark:border-[#262626]">
@@ -59,7 +59,7 @@ export default async function DealerInvitePage({
             Unable to Accept Invite
           </h1>
           <p className="text-[14px] font-light text-[#171717] dark:text-[#FAFAFA] mb-6">
-            {error.message || 'An error occurred while accepting the invitation.'}
+            {error?.message || 'Invite acceptance failed.'}
           </p>
           <Link href="/dealer-select">
             <Button className="bg-[#3B82F6] hover:bg-[#3B82F6]/90 text-white w-full">
@@ -72,5 +72,5 @@ export default async function DealerInvitePage({
   }
 
   // Success - redirect to the dealership
-  redirect(`/dealer/${dealershipId}`);
+  redirect(`/dealer/${data[0].dealership_id}`);
 }
