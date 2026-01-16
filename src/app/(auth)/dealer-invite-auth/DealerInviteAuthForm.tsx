@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseBrowser } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,16 @@ export default function DealerInviteAuthForm() {
 
   const searchParams = useSearchParams();
   const next = searchParams.get('next');
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowser();
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user && next) {
+        window.location.href = next;
+      }
+    });
+  }, [next]);
 
   const handleSendLink = async (e: React.FormEvent) => {
     e.preventDefault();
