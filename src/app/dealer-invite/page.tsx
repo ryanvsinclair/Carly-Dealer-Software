@@ -42,7 +42,7 @@ export default async function DealerInvitePage({
   if (!user) {
     const nextPath = `/dealer-invite?token=${token}`;
     const params = new URLSearchParams({ next: nextPath });
-    redirect(`/dealer-login?${params.toString()}`);
+    redirect(`/dealer-invite-auth?${params.toString()}`);
   }
 
   // Attempt to accept the invite
